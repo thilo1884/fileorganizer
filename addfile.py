@@ -24,11 +24,12 @@ class dataFile(object):
         print(self.name, self.type, self.size)
 
 class fileCSV(object):
-    def __init__(self, namefile): 
-        self.namefile = namefile 
+    def __init__(self, path): 
+        self.namefile = os.path.basename(path)
+        self.path = path
 
     def updateListDataInCsv(self, item):
-        with fileinput.input(files=(self.namefile), inplace=True, mode='r') as f:
+        with fileinput.input(files=(self.path), inplace=True, mode='r') as f:
             reader = csv.DictReader(f)
             print(",".join(reader.fieldnames))  # print back the headers
             for row in reader:
@@ -39,14 +40,14 @@ class fileCSV(object):
     def appendDataItem(self, item):
         fields=[item.name, item.type, str(item.size)]
         # fields=['first','second','third']
-        with open(self.namefile, 'a',  newline='') as f:
+        with open(self.path, 'a',  newline='') as f:
             writer = csv.writer(f)
             writer.writerow(fields)
 
     def createNewCSV(self):
         headerList = ['name', 'type', 'size(B)']
         # open CSV file and assign header
-        with open(self.namefile, 'w', newline='') as file:
+        with open(self.path, 'w', newline='') as file:
             dw = csv.DictWriter(file, delimiter=',', 
                                 fieldnames=headerList)
             dw.writeheader()
@@ -144,7 +145,7 @@ def getFileName(filename):
     return os.path.join("files", filename)
 
 # here the script starts
-fileOrganizer = FileOrganizer("files", "recap-test.csv")   
+fileOrganizer = FileOrganizer("files", "files\\recap.csv")   
 
 # get input argument
 parser = argparse.ArgumentParser()
